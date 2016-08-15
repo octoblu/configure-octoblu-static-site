@@ -1,7 +1,7 @@
 _            = require 'lodash'
 async        = require 'async'
-corsConfig   = require '../assets/s3-bucket-cors.cson'
-policyConfig = require '../assets/s3-bucket-policy.cson'
+corsConfig   = require '../../assets/s3-bucket-cors.cson'
+policyConfig = require '../../assets/s3-bucket-policy.cson'
 debug        = require('debug')('configure-octoblu-static-site')
 
 class S3

@@ -1,6 +1,6 @@
 _            = require 'lodash'
 async        = require 'async'
-distroConfig = require '../assets/cloudfront-distro.cson'
+distroConfig = require '../../assets/cloudfront-distro.cson'
 debug        = require('debug')('configure-octoblu-static-site')
 
 class CloudFront

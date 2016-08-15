@@ -1,7 +1,7 @@
 async      = require 'async'
 AWS        = require 'aws-sdk'
-S3         = require './setup-s3'
-CloudFront = require './setup-cloudfront'
+S3         = require './steps/s3'
+CloudFront = require './steps/cloudfront'
 debug      = require('debug')('configure-octoblu-static-site')
 
 class ConfigureStaticSite
