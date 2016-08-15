@@ -4,16 +4,13 @@ distroConfig = require '../../assets/cloudfront-distro.cson'
 debug        = require('debug')('configure-octoblu-static-site')
 
 class CloudFront
-  constructor: ({ AWS, @bucketName, @appDomain }) ->
+  constructor: ({ AWS, @bucketName }) ->
     throw new Error 'Missing AWS argument' unless AWS
     throw new Error 'Missing bucketName argument' unless @bucketName
-    throw new Error 'Missing appDomain argument' unless @appDomain
     @cloudfront = new AWS.CloudFront
 
   configure: (callback) =>
-    @_init (error) =>
-      return callback error if error?
-      callback null
+    @_init callback
 
   _exists: (callback) =>
     @cloudfront.listDistributions (error, result) =>

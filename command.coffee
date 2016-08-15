@@ -1,15 +1,29 @@
+_                   = require 'lodash'
 colors              = require 'colors'
 dashdash            = require 'dashdash'
 ConfigureStaticSite = require './src'
 packageJSON         = require './package.json'
+debug               = require('debug')('configure-octoblu-static-site')
 
 OPTIONS = [
   {
-    names: ['cluster-domain', 'c']
+    names: ['root-domain', 'r']
     type: 'string'
-    env: 'CLUSTER_DOMAIN'
-    help: 'Specify the cluster domain to add the service to'
+    env: 'ROOT_DOMAIN'
+    help: 'Specify the root domain to add the service to'
     default: 'octoblu.com'
+  }
+  {
+    names: ['clusters', 'c']
+    type: 'string'
+    env: 'CLUSTERS'
+    help: 'Specify the clusters to add, separated by a ","'
+  }
+  {
+    names: ['project-name', 'p']
+    type: 'string'
+    env: 'PROJECT_NAME'
+    help: 'Specify the name of the Project, or Service. It should be dasherized.'
   }
   {
     names: ['subdomain', 's']
@@ -51,13 +65,13 @@ OPTIONS = [
 class Command
   constructor: ->
     process.on 'uncaughtException', @die
-    { @awsConfig, @subdomain, @clusterDomain } = @parseOptions()
 
   parseOptions: =>
     parser = dashdash.createParser { options: OPTIONS }
     { help, version } = parser.parse process.argv
-    { subdomain, cluster_domain } = parser.parse process.argv
+    { subdomain, root_domain } = parser.parse process.argv
     { aws_key, aws_secret, aws_region } = parser.parse process.argv
+    { project_name, clusters } = parser.parse process.argv
 
     if help
       console.log "usage: configure-octoblu-static-site [OPTIONS]\noptions:\n#{parser.help({includeEnv: true})}"
@@ -70,6 +84,11 @@ class Command
     unless subdomain
       console.error "usage: configure-octoblu-static-site [OPTIONS]\noptions:\n#{parser.help({includeEnv: true})}"
       console.error colors.red 'Missing required parameter --subdomain, -s, or env: SUBDOMAIN'
+      process.exit 1
+
+    unless project_name
+      console.error "usage: configure-octoblu-static-site [OPTIONS]\noptions:\n#{parser.help({includeEnv: true})}"
+      console.error colors.red 'Missing required parameter --project-name, -p, or env: PROJECT_NAME'
       process.exit 1
 
     unless aws_key
@@ -97,19 +116,47 @@ class Command
       console.error colors.red 'Subdomain must not include "-static"'
       process.exit 1
 
-    clusterDomain = cluster_domain.replace /^\./, ''
+    rootDomain = root_domain.replace /^\./, ''
+    projectName = _.kebabCase project_name
+    clustersArray = _.compact _.map clusters?.split(','), (cluster) => return cluster?.trim()
+    clustersArray = ['major', 'minor', 'hpe'] if _.isEmpty clustersArray
 
     awsConfig = {
       accessKeyId: aws_key,
       secretAccessKey: aws_secret,
       region: aws_region,
     }
-    return { awsConfig, subdomain, clusterDomain }
+    return { clusters: clustersArray, projectName, awsConfig, subdomain, rootDomain }
 
   run: =>
-    console.log "Configuring #{@subdomain}.#{@clusterDomain}"
-    configureStaticSite = new ConfigureStaticSite { @awsConfig, @subdomain, @clusterDomain }
-    configureStaticSite.run @die
+    options = @parseOptions()
+    debug 'Configuring', options
+    configureStaticSite = new ConfigureStaticSite options
+    configureStaticSite.run (error) =>
+      return @die error if error?
+      console.log 'I did some of the hard work, but you still do a few a things'
+      console.log '* Make sure to update your tools'
+      console.log '  - `npm install --global deployinate-configurator`'
+      console.log '  - `brew update && brew upgrade majorsync minorsync hpesync vulcansync hpevulcansync`'
+      console.log '* Sync etcd:'
+      console.log "  - `majorsync load #{options.projectName}`"
+      console.log "  - `minorsync load #{options.projectName}`"
+      console.log "  - `hpesync load #{options.projectName}`"
+      console.log '* Sync vulcan:'
+      console.log "  - `vulcansync load octoblu-#{options.projectName}`"
+      console.log "  - `hpevulcansync load octoblu-#{options.projectName}`"
+      console.log '* Create services:'
+      console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/the-stack-services/services.d"
+      console.log "  - `dplcfg service -d #{options.projectName} #{options.projectName}`"
+      console.log "  - `fleetmux`"
+      console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/the-stack-services"
+      console.log "  - `./scripts/run-on-services.sh 'submit,start' '*#{options.projectName}*'`"
+      console.log "* Commit everything"
+      console.log "* Convert the project to use an nginx Dockerfile, and runtime configuration"
+      console.log "* Setup the repo in Quay"
+      console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/#{options.projectName}`"
+      console.log "  - `quayify`"
+
 
   die: (error) =>
     return process.exit(0) unless error?

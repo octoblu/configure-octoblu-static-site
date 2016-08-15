@@ -3,11 +3,10 @@ async        = require 'async'
 debug        = require('debug')('configure-octoblu-static-site')
 
 class Route53
-  constructor: ({ AWS, @clusterDomain, @bucketName, @appDomain }) ->
+  constructor: ({ AWS, @rootDomain, @bucketName }) ->
     throw new Error 'Missing AWS argument' unless AWS
     throw new Error 'Missing bucketName argument' unless @bucketName
-    throw new Error 'Missing appDomain argument' unless @appDomain
-    throw new Error 'Missing clusterDomain argument' unless @clusterDomain
+    throw new Error 'Missing rootDomain argument' unless @rootDomain
     @route53 = new AWS.Route53
     @cloudfront = new AWS.CloudFront
 
@@ -34,8 +33,8 @@ class Route53
     @route53.listHostedZones (error, result) =>
       return callback error if error?
       hostedZone = _.find result.HostedZones, (item) =>
-        return item.Name.indexOf(@clusterDomain) == 0
-      return callback new Error "Missing hosted zone for #{@clusterDomain}" unless hostedZone
+        return item.Name.indexOf(@rootDomain) == 0
+      return callback new Error "Missing hosted zone for #{@rootDomain}" unless hostedZone
       @hostedZoneId = hostedZone.Id.replace('/hostedzone/', '')
       callback null, @hostedZoneId
 
