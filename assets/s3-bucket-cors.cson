@@ -1,0 +1,9 @@
+CORSConfiguration:
+  CORSRules: [
+    {
+      AllowedMethods: [ 'GET' ],
+      AllowedOrigins: [ '*' ],
+      AllowedHeaders: ['Authorization' ],
+      MaxAgeSeconds: 0
+    }
+   ]

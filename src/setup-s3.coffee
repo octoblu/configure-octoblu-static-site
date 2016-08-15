@@ -1,5 +1,8 @@
-_     = require 'lodash'
-debug = require('debug')('configure-octoblu-static-site')
+_            = require 'lodash'
+async        = require 'async'
+corsConfig   = require '../assets/s3-bucket-cors.cson'
+policyConfig = require '../assets/s3-bucket-policy.cson'
+debug        = require('debug')('configure-octoblu-static-site')
 
 class SetupS3
   constructor: ({ @AWS, @subdomain, @clusterDomain }) ->
@@ -13,7 +16,12 @@ class SetupS3
   run: (callback) =>
     @_init (error) =>
       return callback error if error?
-      callback null
+      async.series [
+        @_policyify,
+        @_corsify,
+      ], (error) =>
+        return callback error if error?
+        callback null
 
   _bucketExists: (callback) =>
     @s3.listBuckets (error, result) =>
@@ -29,5 +37,18 @@ class SetupS3
       return callback null if exists
       debug 'creating bucket'
       @bucket.createBucket callback
+
+  _corsify: (callback) =>
+    @bucket.putBucketCors corsConfig, callback
+
+  _policyify: (callback) =>
+    _policyConfig =  _.cloneDeep policyConfig
+    _policyConfig.Statement[0].Resource = "arn:aws:s3:::#{@bucketName}/*"
+    params =
+      Policy: JSON.stringify _policyConfig
+    @bucket.putBucketPolicy params, callback
+
+  _details: (callback) =>
+    @bucket.getBucketWebsite (error) =>
 
 module.exports = SetupS3
