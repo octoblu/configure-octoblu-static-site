@@ -156,6 +156,7 @@ class Command
       console.log "* Setup the repo in Quay"
       console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/#{options.projectName}`"
       console.log "  - `quayify`"
+      console.log "* Once it is all setup, point the domains to their respective clusters in Route53. (I am too scared to do it automatically)"
 
 
   die: (error) =>
