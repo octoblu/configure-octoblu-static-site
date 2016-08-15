@@ -4,16 +4,15 @@ corsConfig   = require '../assets/s3-bucket-cors.cson'
 policyConfig = require '../assets/s3-bucket-policy.cson'
 debug        = require('debug')('configure-octoblu-static-site')
 
-class SetupS3
-  constructor: ({ @AWS, @subdomain, @clusterDomain }) ->
-    throw new Error 'Missing AWS argument' unless @AWS
-    throw new Error 'Missing subdomain argument' unless @subdomain
-    throw new Error 'Missing clusterDomain argument' unless @clusterDomain
-    @bucketName = "#{@subdomain}-static.#{@clusterDomain}"
-    @s3         = new @AWS.S3
-    @bucket     = new @AWS.S3 { params: { Bucket: @bucketName }}
+class S3
+  constructor: ({ AWS, @bucketName, @appDomain }) ->
+    throw new Error 'Missing AWS argument' unless AWS
+    throw new Error 'Missing bucketName argument' unless @bucketName
+    throw new Error 'Missing appDomain argument' unless @appDomain
+    @s3         = new AWS.S3 { region: 'us-west-2' }
+    @bucket     = new AWS.S3 { region: 'us-west-2', params: { Bucket: @bucketName }}
 
-  run: (callback) =>
+  configure: (callback) =>
     @_init (error) =>
       return callback error if error?
       async.series [
@@ -51,4 +50,4 @@ class SetupS3
   _details: (callback) =>
     @bucket.getBucketWebsite (error) =>
 
-module.exports = SetupS3
+module.exports = S3

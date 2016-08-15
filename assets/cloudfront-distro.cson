@@ -1,0 +1,70 @@
+DistributionConfig:
+  Comment: ''
+  CacheBehaviors:
+    Quantity: 0
+  Logging:
+    Bucket: ''
+    Prefix: ''
+    Enabled: false
+    IncludeCookies: false
+  WebACLId: ''
+  Origins:
+    Items: [
+      {
+        S3OriginConfig:
+          OriginAccessIdentity: ''
+        OriginPath: ''
+        CustomHeaders: 
+          Quantity: 0
+        Id: null
+        DomainName: null 
+      }
+    ]
+    Quantity: 1
+  DefaultRootObject: ''
+  PriceClass: 'PriceClass_100'
+  Enabled: true
+  DefaultCacheBehavior:
+    TrustedSigners:
+      Enabled: false
+      Quantity: 0
+    TargetOriginId: null 
+    ViewerProtocolPolicy: 'redirect-to-https'
+    ForwardedValues:
+      Headers:
+        Quantity: 0
+      Cookies:
+        Forward: 'none'
+      QueryString: false
+    MaxTTL: 31536000
+    SmoothStreaming: false
+    DefaultTTL: 86400
+    AllowedMethods:
+      Items: [
+        'HEAD'
+        'GET'
+      ]
+      CachedMethods:
+        Items: [
+          'HEAD'
+          'GET'
+        ]
+        Quantity: 2
+      Quantity: 2
+    MinTTL: 0
+    Compress: true
+  ViewerCertificate:
+    SSLSupportMethod: 'sni-only'
+    ACMCertificateArn: 'arn:aws:acm:us-east-1:822069890720:certificate/aab18d86-a51f-4e0b-b51f-83d08772621c'
+    MinimumProtocolVersion: 'TLSv1'
+    Certificate: 'arn:aws:acm:us-east-1:822069890720:certificate/aab18d86-a51f-4e0b-b51f-83d08772621c'
+    CertificateSource: 'acm'
+  CustomErrorResponses:
+    Quantity: 0
+  Restrictions:
+    GeoRestriction:
+      RestrictionType: 'none'
+      Quantity: 0
+  Aliases:
+    Items: [ ]
+    Quantity: 1
