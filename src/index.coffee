@@ -2,6 +2,7 @@ async      = require 'async'
 AWS        = require 'aws-sdk'
 S3         = require './steps/s3'
 CloudFront = require './steps/cloudfront'
+Route53    = require './steps/route53'
 debug      = require('debug')('configure-octoblu-static-site')
 
 class ConfigureStaticSite
@@ -14,13 +15,15 @@ class ConfigureStaticSite
 
     AWS.config.update awsConfig
 
-    @s3 = new S3 { AWS, bucketName, appDomain }
+    @s3 = new S3 { AWS, bucketName }
     @cloudfront = new CloudFront { AWS, bucketName, appDomain }
+    @route53 = new Route53 { AWS, bucketName, appDomain, clusterDomain }
 
   run: (callback) =>
     async.series [
       @s3.configure,
       @cloudfront.configure,
+      @route53.configure,
     ], callback
 
 module.exports = ConfigureStaticSite

@@ -5,10 +5,9 @@ policyConfig = require '../../assets/s3-bucket-policy.cson'
 debug        = require('debug')('configure-octoblu-static-site')
 
 class S3
-  constructor: ({ AWS, @bucketName, @appDomain }) ->
+  constructor: ({ AWS, @bucketName }) ->
     throw new Error 'Missing AWS argument' unless AWS
     throw new Error 'Missing bucketName argument' unless @bucketName
-    throw new Error 'Missing appDomain argument' unless @appDomain
     @s3         = new AWS.S3 { region: 'us-west-2' }
     @bucket     = new AWS.S3 { region: 'us-west-2', params: { Bucket: @bucketName }}
 
