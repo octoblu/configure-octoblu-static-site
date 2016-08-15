@@ -117,7 +117,7 @@ class Command
       process.exit 1
 
     rootDomain = root_domain.replace /^\./, ''
-    projectName = _.kebabCase project_name
+    projectName = project_name
     clustersArray = _.compact _.map clusters?.split(','), (cluster) => return cluster?.trim()
     clustersArray = ['major', 'minor', 'hpe'] if _.isEmpty clustersArray
 

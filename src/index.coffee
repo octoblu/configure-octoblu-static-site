@@ -15,6 +15,7 @@ class ConfigureStaticSite
     throw new Error 'Missing rootDomain argument' unless rootDomain
     throw new Error 'Missing awsConfig argument' unless awsConfig
     bucketName = "#{subdomain}-static.octoblu.com"
+    debug 'bucket name', { bucketName }
 
     AWS.config.update awsConfig
 

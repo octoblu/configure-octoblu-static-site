@@ -18,10 +18,12 @@ class Route53
       return callback error if error?
       @route53.listResourceRecordSets {
         HostedZoneId: hostedZoneId
+        StartRecordName: "#{@bucketName}"
         MaxItems: '1000'
       }, (error, result) =>
         return callback error if error?
         exists = _.some result.ResourceRecordSets, (item) =>
+          debug 'route name', item.Name, @bucketName
           return item.Name.indexOf(@bucketName) == 0
         debug 'route exists' if exists
         debug 'route does not exist' unless exists
