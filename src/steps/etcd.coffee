@@ -19,10 +19,15 @@ class Etcd
     fs.stat clusterConfigPath, (error, stats) =>
       return callback error if error?
       return callback new Error("No configuration for #{cluster}") unless stats.isDirectory()
-      projectPath = path.join clusterConfigPath, 'etcd', 'octoblu', @projectName, 'env'
+      projectPath = path.join clusterConfigPath, 'etcd', 'octoblu', @projectName
       debug 'projectPath', projectPath
       fs.ensureDir projectPath, (error) =>
         return callback error if error?
-        fs.writeFile path.join(projectPath, 'DEBUG'), 'nothing', callback
+        @_writeFiles projectPath, callback
+
+  _writeFiles: (projectPath, callback) =>
+    fs.writeFile path.join(projectPath, 'docker_url'), "quay.io/octoblu/#{@projectName}", (error) =>
+      return callback error if error?
+      fs.writeFile path.join(projectPath, 'env', 'DEBUG'), 'nothing', callback
 
 module.exports = Etcd

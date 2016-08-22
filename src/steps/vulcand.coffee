@@ -32,6 +32,7 @@ class Vulcand
     async.series [
       async.apply @_createBackend, cluster, projectPath
       async.apply @_createFrontend, cluster, projectPath
+      async.apply @_createMiddleware, cluster, projectPath
     ], callback
 
   _createBackend: (cluster, projectPath, callback) =>
@@ -45,5 +46,14 @@ class Vulcand
     domain = "#{@subdomain}.#{cluster}.#{@rootDomain}" unless @cluster in ["major", "minor"]
     template = "--id octoblu-#{@projectName}\n--backend octoblu-#{@projectName}\n--route Host(\"#{domain}\")\n--trustForwardHeader"
     fs.writeFile path.join(projectPath, 'frontend'), template, callback
+
+  _createMiddleware: (cluster, projectPath, callback) =>
+    fs.ensureDir path.join(projectPath, 'middlewares'), (error) =>
+      return callback error if error?
+      templateProjectPath = path.join @ENV_DIR, cluster, 'vulcan', "octoblu-weather-service"
+      jobLoggerTemplatePath = path.join templateProjectPath, 'middlewares', 'job-logger'
+      file = fs.readFileSync(jobLoggerTemplatePath).toString()
+      content = file.replace(/weather-service/g, @projectName)
+      fs.writeFile path.join(projectPath, 'middlewares', 'job-logger'), content, callback
 
 module.exports = Vulcand
