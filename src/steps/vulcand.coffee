@@ -43,7 +43,9 @@ class Vulcand
   _createFrontend: (cluster, projectPath, callback) =>
     debug 'creating frontend for', { cluster }
     domain = "#{@subdomain}.#{@rootDomain}"
-    domain = "#{@subdomain}.#{cluster}.#{@rootDomain}" unless @cluster in ["major", "minor"]
+    _cluster = ""
+    _cluster = "#{cluster}." unless cluster == 'major'
+    domain = "#{@subdomain}.#{_cluster}#{@rootDomain}" unless @cluster in ["major", "minor"]
     template = "--id octoblu-#{@projectName}\n--backend octoblu-#{@projectName}\n--route Host(\"#{domain}\")\n--trustForwardHeader"
     fs.writeFile path.join(projectPath, 'frontend'), template, callback
 

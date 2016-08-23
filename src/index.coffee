@@ -23,7 +23,7 @@ class ConfigureStaticSite
     @s3 = new S3 { AWS, bucketName }
     @cloudfront = new CloudFront { AWS, bucketName }
     @route53 = new Route53 { AWS, bucketName, rootDomain }
-    @etcd = new Etcd { clusters, projectName }
+    @etcd = new Etcd { clusters, projectName, rootDomain, subdomain }
     @services = new Services { projectName }
     @vulcand = new Vulcand { subdomain, rootDomain, clusters, projectName }
 
