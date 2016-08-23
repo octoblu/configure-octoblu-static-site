@@ -166,7 +166,9 @@ class Command
       console.log "  - `./scripts/run-on-services.sh 'submit,start' '*#{options.projectName}*'`"
       console.log "* Commit the-stack-env-production and the-stack-services"
       console.log "* Once it is all setup, point the domains to their respective clusters in Route53. (I am too scared to do it automatically)"
-
+      console.log "  - so you'll the following domains pointed to the right service cluster"
+      console.log "  - #{options.subdomain}.octoblu.com i.e. service-cluster-1379831036.us-west-2.elb.amazonaws.com"
+      console.log "  - #{options.subdomain}.hpe.octoblu.com i.e. service-hpe-cluster-1351431065.us-east-1.elb.amazonaws.com"
 
   die: (error) =>
     return process.exit(0) unless error?
