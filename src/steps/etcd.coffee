@@ -21,7 +21,7 @@ class Etcd
       return callback new Error("No configuration for #{cluster}") unless stats.isDirectory()
       projectPath = path.join clusterConfigPath, 'etcd', 'octoblu', @projectName
       debug 'projectPath', projectPath
-      fs.ensureDir projectPath, (error) =>
+      fs.ensureDir path.join(projectPath, 'env'), (error) =>
         return callback error if error?
         @_writeFiles projectPath, callback
 
