@@ -139,9 +139,8 @@ class Command
       console.log "* Convert the project to use an nginx Dockerfile, and runtime configuration"
       console.log "* Setup the repo in Quay"
       console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/#{options.projectName}`"
-      console.log "  - `quayify`"
+      console.log "  - `quayify` - make sure the webhook is setup"
       console.log '* Make sure to update your tools'
-      console.log '  - `npm install --global deployinate-configurator`'
       console.log '  - `brew update && brew upgrade majorsync minorsync hpesync vulcansync hpevulcansync`'
       console.log '* Sync etcd:'
       console.log "  - `majorsync load #{options.projectName}`"
@@ -150,10 +149,7 @@ class Command
       console.log '* Sync vulcan:'
       console.log "  - `hpevulcansync load octoblu-#{options.projectName}`"
       console.log "  - `vulcansync load octoblu-#{options.projectName}`"
-      console.log '* Create services:'
-      console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/the-stack-services/services.d"
-      console.log "  - `dplcfg service -d #{options.projectName} #{options.projectName}`"
-      console.log " # in new tab"
+      console.log "* Create services:"
       console.log "  - `fleetmux`"
       console.log "  - Create 2 instances when prompted"
       console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/the-stack-services"
@@ -168,6 +164,7 @@ class Command
       console.log "  - Create 2 instances when prompted"
       console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/the-stack-services"
       console.log "  - `./scripts/run-on-services.sh 'submit,start' '*#{options.projectName}*'`"
+      console.log "* Commit the-stack-env-production and the-stack-services"
       console.log "* Once it is all setup, point the domains to their respective clusters in Route53. (I am too scared to do it automatically)"
 
 

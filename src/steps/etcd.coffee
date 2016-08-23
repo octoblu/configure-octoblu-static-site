@@ -8,6 +8,7 @@ class Etcd
   constructor: ({ @projectName, @clusters }) ->
     throw new Error 'Missing projectName argument' unless @projectName
     throw new Error 'Missing clusters argument' unless @clusters
+    { @version } = require "#{process.env.HOME}/Projects/Octoblu/#{@projectName}/package.json"
     @ENV_DIR = "#{process.env.HOME}/Projects/Octoblu/the-stack-env-production"
 
   configure: (callback) =>
@@ -26,7 +27,7 @@ class Etcd
         @_writeFiles projectPath, callback
 
   _writeFiles: (projectPath, callback) =>
-    fs.writeFile path.join(projectPath, 'docker_url'), "quay.io/octoblu/#{@projectName}", (error) =>
+    fs.writeFile path.join(projectPath, 'docker_url'), "quay.io/octoblu/#{@projectName}:v#{@version}", (error) =>
       return callback error if error?
       fs.writeFile path.join(projectPath, 'env', 'DEBUG'), 'nothing', callback
 
