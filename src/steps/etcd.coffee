@@ -10,7 +10,6 @@ class Etcd
     throw new Error 'Missing clusters argument' unless @clusters?
     throw new Error 'Missing subdomain argument' unless @subdomain?
     throw new Error 'Missing rootDomain argument' unless @rootDomain?
-    { @version } = require "#{process.env.HOME}/Projects/Octoblu/#{@projectName}/package.json"
     @ENV_DIR = "#{process.env.HOME}/Projects/Octoblu/the-stack-env-production"
     @cdnUri = "https://#{@subdomain}-static.#{@rootDomain}"
 
@@ -30,10 +29,6 @@ class Etcd
         @_writeFiles projectPath, callback
 
   _writeFiles: (projectPath, callback) =>
-    fs.writeFile path.join(projectPath, 'docker_url'), "quay.io/octoblu/#{@projectName}:v#{@version}", (error) =>
-      return callback error if error?
-      fs.writeFile path.join(projectPath, 'env', 'DEBUG'), 'nothing', (error) =>
-        return callback error if error?
-        fs.writeFile path.join(projectPath, 'env', 'CDN'), @cdnUri, callback
+    fs.writeFile path.join(projectPath, 'env', 'CDN'), @cdnUri, callback
 
 module.exports = Etcd

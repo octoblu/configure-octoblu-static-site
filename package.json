@@ -26,11 +26,8 @@
     "coffee-script": "^1.10.0",
     "dashdash": "^1.14.0",
     "debug": "^2.2.0",
-    "deployinate-configurator": "^3.1.1",
-    "eco": "^1.1.0-rc-3",
     "fs-cson": "^0.3.2",
     "fs-extra": "^0.30.0",
-    "glob": "^7.0.5",
     "lodash": "^4.15.0"
   },
   "devDependencies": {},

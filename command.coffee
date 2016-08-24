@@ -137,38 +137,8 @@ class Command
       console.log 'I did some of the hard work, but you still do a few a things'
       console.log "* Commit everything"
       console.log "* Convert the project to use an nginx Dockerfile, and runtime configuration"
-      console.log "* Setup the repo in Quay"
-      console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/#{options.projectName}`"
-      console.log "  - `quayify` - make sure the webhook is setup"
-      console.log '* Make sure to update your tools'
-      console.log '  - `brew update && brew upgrade majorsync minorsync hpesync vulcansync hpevulcansync`'
-      console.log '* Sync etcd:'
-      console.log "  - `majorsync load #{options.projectName}`"
-      console.log "  - `minorsync load #{options.projectName}`"
-      console.log "  - `hpesync load #{options.projectName}`"
-      console.log '* Sync vulcan:'
-      console.log "  - `hpevulcansync load octoblu-#{options.projectName}`"
-      console.log "  - `vulcansync load octoblu-#{options.projectName}`"
-      console.log "* Create services:"
-      console.log "  - `fleetmux`"
-      console.log "  - Create 2 instances when prompted"
-      console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/the-stack-services"
-      console.log "  - `./scripts/run-on-services.sh 'submit,start' '*#{options.projectName}*'`"
-      console.log "  - `minormux`"
-      console.log " # in new tab"
-      console.log "  - Create 1 instance when prompted"
-      console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/the-stack-services"
-      console.log "  - `./scripts/run-on-services.sh 'submit,start' '*#{options.projectName}*'`"
-      console.log " # in new tab"
-      console.log "  - `hpemux`"
-      console.log "  - Create 2 instances when prompted"
-      console.log "  - `cd #{process.env.HOME}/Projects/Octoblu/the-stack-services"
-      console.log "  - `./scripts/run-on-services.sh 'submit,start' '*#{options.projectName}*'`"
-      console.log "* Commit the-stack-env-production and the-stack-services"
-      console.log "* Once it is all setup, point the domains to their respective clusters in Route53. (I am too scared to do it automatically)"
-      console.log "  - so you'll the following domains pointed to the right service cluster"
-      console.log "  - #{options.subdomain}.octoblu.com i.e. service-cluster-1379831036.us-west-2.elb.amazonaws.com"
-      console.log "  - #{options.subdomain}.hpe.octoblu.com i.e. service-hpe-cluster-1351431065.us-east-1.elb.amazonaws.com"
+      console.log "* Use the configure-octoblu-service project to create the service files"
+      console.log "!IMPORTANT: follow the instructions listed after running configure-octoblu-service"
 
   die: (error) =>
     return process.exit(0) unless error?

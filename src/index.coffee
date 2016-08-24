@@ -4,8 +4,6 @@ S3         = require './steps/s3'
 CloudFront = require './steps/cloudfront'
 Route53    = require './steps/route53'
 Etcd       = require './steps/etcd'
-Vulcand    = require './steps/vulcand'
-Services   = require './steps/services'
 debug      = require('debug')('configure-octoblu-static-site')
 
 class ConfigureStaticSite
@@ -24,8 +22,6 @@ class ConfigureStaticSite
     @cloudfront = new CloudFront { AWS, bucketName }
     @route53 = new Route53 { AWS, bucketName, rootDomain }
     @etcd = new Etcd { clusters, projectName, rootDomain, subdomain }
-    @services = new Services { projectName }
-    @vulcand = new Vulcand { subdomain, rootDomain, clusters, projectName }
 
   run: (callback) =>
     async.series [
@@ -33,8 +29,6 @@ class ConfigureStaticSite
       @cloudfront.configure,
       @route53.configure,
       @etcd.configure,
-      @services.configure,
-      @vulcand.configure,
     ], callback
 
 module.exports = ConfigureStaticSite
