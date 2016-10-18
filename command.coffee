@@ -1,4 +1,3 @@
-_                   = require 'lodash'
 colors              = require 'colors'
 dashdash            = require 'dashdash'
 ConfigureStaticSite = require './src'
@@ -12,12 +11,6 @@ OPTIONS = [
     env: 'ROOT_DOMAIN'
     help: 'Specify the root domain to add the service to'
     default: 'octoblu.com'
-  }
-  {
-    names: ['clusters', 'c']
-    type: 'string'
-    env: 'CLUSTERS'
-    help: 'Specify the clusters to add, separated by a ","'
   }
   {
     names: ['project-name', 'p']
@@ -34,13 +27,13 @@ OPTIONS = [
   {
     names: ['aws-secret']
     type: 'string'
-    env: 'AWS_SECRET'
+    env: 'AWS_SECRET_ACCESS_KEY'
     help: 'Specify the aws secret access key'
   }
   {
     names: ['aws-key']
     type: 'string'
-    env: 'AWS_KEY'
+    env: 'AWS_ACCESS_KEY_ID'
     help: 'Specify the aws access key'
   }
   {
@@ -71,7 +64,7 @@ class Command
     { help, version } = parser.parse process.argv
     { subdomain, root_domain } = parser.parse process.argv
     { aws_key, aws_secret, aws_region } = parser.parse process.argv
-    { project_name, clusters } = parser.parse process.argv
+    { project_name } = parser.parse process.argv
 
     if help
       console.log "usage: configure-octoblu-static-site [OPTIONS]\noptions:\n#{parser.help({includeEnv: true})}"
@@ -118,15 +111,13 @@ class Command
 
     rootDomain = root_domain.replace /^\./, ''
     projectName = project_name
-    clustersArray = _.compact _.map clusters?.split(','), (cluster) => return cluster?.trim()
-    clustersArray = ['major', 'minor', 'hpe'] if _.isEmpty clustersArray
 
     awsConfig = {
       accessKeyId: aws_key,
       secretAccessKey: aws_secret,
       region: aws_region,
     }
-    return { clusters: clustersArray, projectName, awsConfig, subdomain, rootDomain }
+    return { projectName, awsConfig, subdomain, rootDomain }
 
   run: =>
     options = @parseOptions()
